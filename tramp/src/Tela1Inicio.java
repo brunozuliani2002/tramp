@@ -15,6 +15,8 @@ public class Tela1Inicio {
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
+
+
     }
     public Tela1Inicio() {
 
@@ -26,7 +28,7 @@ public class Tela1Inicio {
                 frameTelaInicio.setVisible(false);
 
                 JFrame frameTelaCadastro = new JFrame("TelaCadastrar");
-                frameTelaCadastro.setContentPane(new Tela2CadastroUser().JPTelaCadastroUser);
+                frameTelaCadastro.setContentPane(new Tela2CadastroUser().JPTelaCadastro);
                 frameTelaCadastro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frameTelaCadastro.pack();
                 frameTelaCadastro.setVisible(true);

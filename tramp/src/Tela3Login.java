@@ -11,8 +11,6 @@ public class Tela3Login {
     private JTextField txtSenha;
     private JLabel LUsuario;
     public JPanel JPTelaLogin;
-    private JTextField txtLogin;
-    private JButton btnLogar;
     private JLabel LStatus;
     private JButton btnVoltar;
 
@@ -20,30 +18,33 @@ public class Tela3Login {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
-
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         JFrame frame = new JFrame("TelaLogin");
         frame.setContentPane(new Tela3Login().JPTelaLogin);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
-
     }
 
     public void logar() {
-
         try {
-            String sql = "select * from tbusuarios where login = ? and senha = ?";
-            // consulta ao banco o q foi digitado nos txt
+            if (conexao == null) {
+                JOptionPane.showMessageDialog(null, "Não foi possível estabelecer a conexão com o banco de dados.");
+                return;
+            }
+            if (txtUsuario.getText().isEmpty() || txtSenha.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos.");
+                return;
+            }
+
+            String sql = "SELECT * FROM tbusuarios WHERE login = ? AND senha = ?";
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuario.getText());
             pst.setString(2, txtSenha.getText());
-            //executa a query
-            rs = pst.executeQuery();
-            //se existir usuario e senha correspondente
-            if (rs.next()) {
 
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
                 JFrame frameTelaLogin = (JFrame) SwingUtilities.getWindowAncestor(JPTelaLogin);
                 frameTelaLogin.setVisible(false);
 
@@ -53,55 +54,58 @@ public class Tela3Login {
                 frameTelaPrincipal.pack();
                 frameTelaPrincipal.setVisible(true);
                 frameTelaPrincipal.setLocationRelativeTo(null);
-
-
             } else {
-                JOptionPane.showMessageDialog(null, "usuario ou senha incorreto");
+                JOptionPane.showMessageDialog(null, "Usuário ou senha incorretos");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao tentar fazer login:\n" + e.getMessage());
+        } finally {
+            fecharRecursos();
         }
-
     }
 
+    private void fecharRecursos() {
+        try {
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+            // Não feche a conexão aqui, pois ela pode ser reutilizada por outras operações.
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao fechar recursos:\n" + e.getMessage());
+        }
+    }
 
     public Tela3Login() throws SQLException, ClassNotFoundException {
+        try {
+            conexao = ModuloConexao.obterConexao();
+            if (conexao != null) {
+                LStatus.setText("Conectado");
+            } else {
+                LStatus.setText("Não conectado");
+            }
 
-        conexao = ModuloConexao.obterConexao();
-        if (conexao != null) {
-            LStatus.setText("conectado");
-        } else {
-            LStatus.setText("nao conectado");
+            btnLogin.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    logar();
+                }
+            });
+
+            btnVoltar.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JFrame frameTelaLogin = (JFrame) SwingUtilities.getWindowAncestor(JPTelaLogin);
+                    frameTelaLogin.setVisible(false);
+
+                    JFrame frameTelaInicio = new JFrame("TelaInicio");
+                    frameTelaInicio.setContentPane(new Tela1Inicio().JPTelaInicio);
+                    frameTelaInicio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frameTelaInicio.pack();
+                    frameTelaInicio.setVisible(true);
+                    frameTelaInicio.setLocationRelativeTo(null);
+                }
+            });
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao iniciar a tela:\n" + e.getMessage());
         }
-
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                logar();
-            }
-        });
-        btnVoltar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame frameTelaLogin = (JFrame) SwingUtilities.getWindowAncestor(JPTelaLogin);
-                frameTelaLogin.setVisible(false);
-
-                JFrame frameTelaInicio = new JFrame("TelaInicio");
-                frameTelaInicio.setContentPane(new Tela1Inicio().JPTelaInicio);
-                frameTelaInicio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frameTelaInicio.pack();
-                frameTelaInicio.setVisible(true);
-                frameTelaInicio.setLocationRelativeTo(null);
-            }
-        });
-
     }
 }
-
-
-
-
-
-
-

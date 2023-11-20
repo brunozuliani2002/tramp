@@ -24,7 +24,7 @@ public class Tela2CadastroUser {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         JFrame frame = new JFrame("TelaCadastroUser");
-        frame.setContentPane(new Tela2CadastroUser().JPTelaCadastroUser);
+        frame.setContentPane(new Tela2CadastroUser().JPTelaCadastro);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -37,15 +37,15 @@ public class Tela2CadastroUser {
         btnCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nome = txtNome.getText();
+                String login = txtLogin.getText();
                 String senha = txtSenha.getText();
 
 
-                if (cadastrarUsuario(nome,senha)) {
+                if (cadastrarUsuario(login,senha)) {
 
-                    JOptionPane.showMessageDialog(JPTelaCadastroUser, "Cadastro realizado com sucesso!");
+                    JOptionPane.showMessageDialog(JPTelaCadastro, "Cadastro realizado com sucesso!");
 
-                    JFrame frameTelaCadastro = (JFrame) SwingUtilities.getWindowAncestor(JPTelaCadastroUser);
+                    JFrame frameTelaCadastro = (JFrame) SwingUtilities.getWindowAncestor(JPTelaCadastro);
                     frameTelaCadastro.setVisible(false);
 
                     JFrame frameTelaLogin = new JFrame("TelaLogin");
@@ -62,7 +62,7 @@ public class Tela2CadastroUser {
                     frameTelaLogin.setLocationRelativeTo(null);
                 } else {
 
-                    JOptionPane.showMessageDialog(JPTelaCadastroUser, "Erro ao cadastrar usuário", "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(JPTelaCadastro, "Erro ao cadastrar usuário", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -71,7 +71,7 @@ public class Tela2CadastroUser {
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frameTelaCadastroUser = (JFrame) SwingUtilities.getWindowAncestor(JPTelaCadastroUser);
+                JFrame frameTelaCadastroUser = (JFrame) SwingUtilities.getWindowAncestor(JPTelaCadastro);
                 frameTelaCadastroUser.setVisible(false);
 
                 JFrame frameTelaInicio = new JFrame("TelaInicio");
@@ -86,16 +86,16 @@ public class Tela2CadastroUser {
     }
 
 
-    private boolean cadastrarUsuario( String nome, String senha) {
+    private boolean cadastrarUsuario( String login, String senha) {
         // Lógica para cadastrar o usuário no banco de dados
         // Substitua pelo código de inserção no banco de dados
 
         try {
             Connection conexao = ModuloConexao.obterConexao();
-            String insercaoSQL = "INSERT INTO tbusuarios (nome, senha) VALUES (?, ?)";
+            String insercaoSQL = "INSERT INTO tbusuarios (login, senha) VALUES (?, ?)";
             PreparedStatement statement = conexao.prepareStatement(insercaoSQL);
 
-            statement.setString(1, nome);
+            statement.setString(1, login);
             statement.setString(2, senha);
             int linhasAfetadas = statement.executeUpdate();
 
