@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="tramp">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/tramp/tramp.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
